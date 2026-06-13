@@ -18,7 +18,7 @@ type config struct {
 type cliCommands struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 func cleanInput(text string) []string {
@@ -50,6 +50,11 @@ func getCommands() map[string]cliCommands {
 			description: "Shows previous Pokemon Locations",
 			callback:    commandMapB,
 		},
+		"explore": {
+			name:        "explore",
+			description: "See what pokemon are at location",
+			callback:    commandExplore,
+		},
 	}
 }
 
@@ -59,7 +64,9 @@ func startRepl() {
 	cfg := newConfig()
 	for {
 		fmt.Print("Pokedex > ")
-		scanner.Scan()
+		if !scanner.Scan() {
+			break
+		}
 
 		words := cleanInput(scanner.Text())
 		cmd, ok := commands[words[0]]
@@ -67,7 +74,14 @@ func startRepl() {
 			fmt.Println("Unknown command")
 			continue
 		}
-		cmd.callback(cfg)
+		if len(words) > 1 {
+			cmd.callback(cfg, words[1])
+		} else {
+			cmd.callback(cfg)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "scanner error:", err)
 	}
 }
 

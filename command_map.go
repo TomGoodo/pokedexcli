@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func commandMap(cfg *config) error {
+func commandMap(cfg *config, name ...string) error {
 	var url *string = nil
 	if cfg.next != nil {
 		url = cfg.next
@@ -20,7 +20,7 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapB(cfg *config) error {
+func commandMapB(cfg *config, name ...string) error {
 	var url *string = nil
 	if cfg.previous == nil {
 		fmt.Println("You're on the first page")
