@@ -3,15 +3,20 @@ package pokeapi
 import (
 	"encoding/json"
 	"net/http"
+	"time"
+
+	"github.com/tomgoodo/pokedexcli/internal/pokecache"
 )
 
 type PokeClient struct {
 	httpClient http.Client
+	pokecache  pokecache.Cache
 }
 
 func NewPokeClient() PokeClient {
 	return PokeClient{
 		httpClient: http.Client{},
+		pokecache:  *pokecache.NewCache(time.Duration(time.Minute)),
 	}
 }
 
@@ -20,6 +25,14 @@ func (c *PokeClient) ListLocations(url *string) (locations, error) {
 	requestUrl := baseURL
 	if url != nil {
 		requestUrl = *url
+	}
+	if cachedVal, ok := c.pokecache.Get(requestUrl); ok {
+		result := locations{}
+		err := json.Unmarshal(cachedVal, &result)
+		if err != nil {
+			return locations{}, err
+		}
+		return result, nil
 	}
 	req, err := http.NewRequest("GET", requestUrl, nil)
 	if err != nil {
