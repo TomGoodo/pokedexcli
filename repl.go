@@ -13,6 +13,7 @@ type config struct {
 	next     *string
 	previous *string
 	client   pokeapi.PokeClient
+	pokedex  map[string]pokeapi.Pokemon
 }
 
 type cliCommands struct {
@@ -55,6 +56,11 @@ func getCommands() map[string]cliCommands {
 			description: "See what pokemon are at location",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a Pokemon!",
+			callback:    commandCatch,
+		},
 	}
 }
 
@@ -62,6 +68,7 @@ func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
 	commands := getCommands()
 	cfg := newConfig()
+	cfg.pokedex = map[string]pokeapi.Pokemon{}
 	for {
 		fmt.Print("Pokedex > ")
 		if !scanner.Scan() {

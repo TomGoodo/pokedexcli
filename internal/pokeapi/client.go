@@ -87,3 +87,37 @@ func (c *PokeClient) LocationExplore(name string) (location, error) {
 	}
 	return result, nil
 }
+
+func (c *PokeClient) Catch(name string) (Pokemon, error) {
+	baseURL := "https://pokeapi.co/api/v2/pokemon/"
+	requestUrl := baseURL
+
+	requestUrl = requestUrl + name
+
+	if cachedVal, ok := c.pokecache.Get(requestUrl); ok {
+		result := Pokemon{}
+		err := json.Unmarshal(cachedVal, &result)
+		if err != nil {
+			return Pokemon{}, err
+		}
+		return result, nil
+	}
+	req, err := http.NewRequest("GET", requestUrl, nil)
+	if err != nil {
+		return Pokemon{}, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return Pokemon{}, err
+	}
+	defer resp.Body.Close()
+
+	result := Pokemon{}
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&result)
+	if err != nil {
+		return Pokemon{}, err
+	}
+	return result, nil
+}

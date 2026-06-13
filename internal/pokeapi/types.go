@@ -61,3 +61,41 @@ type location struct {
 		} `json:"version_details"`
 	} `json:"pokemon_encounters"`
 }
+
+type Pokemon struct {
+	Abilities []struct {
+		Ability struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"ability"`
+		IsHidden bool `json:"is_hidden"`
+		Slot     int  `json:"slot"`
+	} `json:"abilities"`
+	BaseExperience int `json:"base_experience"`
+	Forms          []struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"forms"`
+	Height                 int    `json:"height"`
+	Weight                 int    `json:"weight"`
+	ID                     int    `json:"id"`
+	IsDefault              bool   `json:"is_default"`
+	LocationAreaEncounters string `json:"location_area_encounters"`
+	Name                   string `json:"name"`
+	Order                  int    `json:"order"`
+	Stats                  []struct {
+		BaseStat int `json:"base_stat"`
+		Effort   int `json:"effort"`
+		Stat     struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Slot int `json:"slot"`
+		Type struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"type"`
+	} `json:"types"`
+}
